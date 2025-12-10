@@ -33,7 +33,10 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
     cors({
-        origin:"http://localhost:3000",
+        origin: [
+            "http://localhost:3000",
+            "https://studynotion-git-main-rishabh-guptas-projects-e1c50f84.vercel.app"
+        ],
         credentials:true
     })
 )
