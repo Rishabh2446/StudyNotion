@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const ResetPasswordPage = () => {
 
@@ -10,7 +11,7 @@ const ResetPasswordPage = () => {
     async function handleReset(e){
         e.preventDefault();
         try{
-            const response = await axios.post("http://localhost:4000/api/v1/auth/reset-password-token", {email});
+            const response = await axios.post(`${BASE_URL}/api/v1/auth/reset-password-token`, {email});
             alert(response.data.message || "Password reset link sent to your email");
             navigate("/login");
         }

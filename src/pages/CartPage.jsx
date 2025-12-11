@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
 
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 const CartPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -29,7 +31,7 @@ const CartPage = () => {
 
     try {
         const res = await axios.post(
-        "http://localhost:4000/api/v1/payment/create-stripe-session-multiple",
+        `${BASE_URL}/api/v1/payment/create-stripe-session-multiple`,
         {
             courses: cart.map((course) => ({
             courseId: course._id,

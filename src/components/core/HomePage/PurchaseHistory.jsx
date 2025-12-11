@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const PurchaseHistory = () => {
   const [purchases, setPurchases] = useState([]);
@@ -10,7 +11,7 @@ const PurchaseHistory = () => {
 
   async function fetchPurchaseHistory() {
     const response = await fetch(
-      "http://localhost:4000/api/v1/profile/purchase-history",
+      `${BASE_URL}/api/v1/profile/purchase-history`,
       {
         method: "GET",
         headers: {

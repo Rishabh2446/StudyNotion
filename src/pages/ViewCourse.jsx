@@ -5,6 +5,8 @@ import { FaChevronDown, FaChevronRight } from "react-icons/fa";
 import { FaRegArrowAltCircleLeft } from "react-icons/fa";
 import AddReviewModal from "../components/core/HomePage/AddReviewModal";
 import toast from "react-hot-toast";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 
 
 const ViewCourse = () => {
@@ -44,7 +46,7 @@ const ViewCourse = () => {
         const token = localStorage.getItem("token");
 
         const res = await axios.get(
-          `http://localhost:4000/api/v1/course/getCourse/${courseId}`,
+          `${BASE_URL}/api/v1/course/getCourse/${courseId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -73,7 +75,7 @@ const ViewCourse = () => {
       try {
         const token = localStorage.getItem("token");
         const res = await axios.get(
-          `http://localhost:4000/api/v1/course/progress/${courseId}`,
+          `${BASE_URL}/api/v1/course/progress/${courseId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -102,7 +104,7 @@ const ViewCourse = () => {
     const token = localStorage.getItem("token");
 
     const res = await axios.post(
-      "http://localhost:4000/api/v1/course/addRating",
+      `${BASE_URL}/api/v1/course/addRating`,
       {
         rating,
         review,
@@ -193,7 +195,7 @@ const ViewCourse = () => {
       const token = localStorage.getItem("token");
 
       const res = await axios.post(
-        "http://localhost:4000/api/v1/course/mark-completed",
+        `${BASE_URL}/api/v1/course/mark-completed`,
         {
           courseId,
           subSectionId,

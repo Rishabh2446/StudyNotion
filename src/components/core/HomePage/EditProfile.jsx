@@ -5,6 +5,7 @@ import axios from "axios";
 import { setUser } from "../../../slices/profileSlice";
 import upload from "../../../assets/upload.jpg";
 import toast from "react-hot-toast";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function EditProfile() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -55,7 +56,7 @@ export default function EditProfile() {
 
     try {
       const res = await axios.put(
-        "http://localhost:4000/api/v1/profile/updateDisplayPicture",
+        `${BASE_URL}/api/v1/profile/updateDisplayPicture`,
         formData,
         {
           headers: {
@@ -80,7 +81,7 @@ export default function EditProfile() {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.put(
-        "http://localhost:4000/api/v1/profile/updateProfile",
+        `${BASE_URL}/api/v1/profile/updateProfile`,
         formData,
         {
           headers: {
@@ -102,7 +103,7 @@ export default function EditProfile() {
     try {
         const token = localStorage.getItem("token");
         const res = await axios.post(
-        "http://localhost:4000/api/v1/auth/changePassword",
+        `${BASE_URL}/api/v1/auth/changePassword`,
         passwords,
         {
             headers: {

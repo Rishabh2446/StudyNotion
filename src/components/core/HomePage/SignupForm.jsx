@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { setSignup } from "../../../slices/authSlice"; 
 import toast from 'react-hot-toast';
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 
 const SignupForm = () => {
@@ -44,7 +45,7 @@ const SignupForm = () => {
                 setLoading(true);
 
             const response = await axios.post(
-                "http://localhost:4000/api/v1/auth/send-otp", 
+                `${BASE_URL}/api/v1/auth/send-otp`, 
                 {
                 
                 email: formData.email,

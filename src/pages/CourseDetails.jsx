@@ -11,6 +11,8 @@ import { addToCart } from "../slices/cartSlice";
 import toast from "react-hot-toast";
 
 import { MdArrowDropDown } from "react-icons/md";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 
 
 const CourseDetails = () => {
@@ -33,7 +35,7 @@ const CourseDetails = () => {
   const fetchCourseDetails = async () => {
     try {
       const res = await fetch(
-        "http://localhost:4000/api/v1/course/getCourseDetails",
+        `${BASE_URL}/api/v1/course/getCourseDetails`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -57,7 +59,7 @@ const CourseDetails = () => {
   const checkEnrollment = async () => {
     try {
       const res = await fetch(
-        `http://localhost:4000/api/v1/course/is-enrolled/${courseId}`,
+        `${BASE_URL}/api/v1/course/is-enrolled/${courseId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const data = await res.json();
@@ -83,7 +85,7 @@ const CourseDetails = () => {
     
     try {
       const res = await axios.post(
-        "http://localhost:4000/api/v1/payment/create-stripe-session",
+        `${BASE_URL}/api/v1/payment/create-stripe-session`,
         {
           courseName: course.courseName,
           price: course.price,

@@ -4,6 +4,8 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { removeFromCart } from "../../../slices/cartSlice";
 import { resetCart } from "../../../slices/cartSlice";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 
 const EnrolledCourses = () => {
   const location = useLocation();
@@ -48,7 +50,7 @@ useEffect(() => {
   async function enrollUser(courseIds) {
   try {
     const res = await fetch(
-      "http://localhost:4000/api/v1/payment/verify-and-enroll",
+      `${BASE_URL}/api/v1/payment/verify-and-enroll`,
       {
         method: "POST",
         headers: {
@@ -77,7 +79,7 @@ useEffect(() => {
   async function fetchEnrolledCourses() {
     try {
       const response = await fetch(
-        "http://localhost:4000/api/v1/profile/enrolled-courses",
+        `${BASE_URL}/api/v1/profile/enrolled-courses`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

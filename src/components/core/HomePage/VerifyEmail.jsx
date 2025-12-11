@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function VerifyEmail() {
   const [otp, setOtp] = useState("");
@@ -24,7 +25,7 @@ export default function VerifyEmail() {
 
 
     try {
-      const response = await axios.post("http://localhost:4000/api/v1/auth/signup", {
+      const response = await axios.post(`${BASE_URL}/api/v1/auth/signup`, {
         email,
         otp,
         firstName,

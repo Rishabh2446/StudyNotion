@@ -2,6 +2,7 @@ import React from 'react';
 import axios from "axios";
 import { useState } from 'react';
 import toast from "react-hot-toast";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 
 const CreateCategory = () => {
@@ -14,7 +15,7 @@ const CreateCategory = () => {
     try{
         const token = localStorage.getItem("token");
         console.log("categorytoken", token);
-        const res = await axios.post("http://localhost:4000/api/v1/course/createCategory", {
+        const res = await axios.post(`${BASE_URL}/api/v1/course/createCategory`, {
             name,
             description,
         },

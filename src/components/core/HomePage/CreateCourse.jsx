@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const CreateCourse = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const CreateCourse = () => {
   // LOAD ALL CATEGORIES
   // -----------------------------
   useEffect(() => {
-    fetch("http://localhost:4000/api/v1/course/showAllCategory")
+    fetch(`${BASE_URL}/api/v1/course/showAllCategory`)
       .then((res) => res.json())
       .then((data) => {
         setCategories(data.allCategory || []);
@@ -58,7 +59,7 @@ const CreateCourse = () => {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:4000/api/v1/course/createCourse",
+        `${BASE_URL}/api/v1/course/createCourse`,
         {
           method: "POST",
           headers: {

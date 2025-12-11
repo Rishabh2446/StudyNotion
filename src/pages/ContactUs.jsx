@@ -6,7 +6,7 @@ import axios from "axios";
 import { useState } from "react";
 import Footer from "../components/core/HomePage/common/Footer";
 import toast from "react-hot-toast";
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 
 
@@ -46,7 +46,7 @@ export default function ContactUs() {
 
             console.log("Payload being sent to backend:", payload);
 
-            const res = await axios.post("http://localhost:4000/api/v1/auth/contact", payload,
+            const res = await axios.post(`${BASE_URL}/api/v1/auth/contact`, payload,
                 { headers: { "Content-Type": "application/json" } }
             );
             if (res.data.success) {

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 
 const EditCourse = () => {
   const { courseId } = useParams();
@@ -25,7 +27,7 @@ const EditCourse = () => {
   const fetchCourse = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:4000/api/v1/course/getCourse/${courseId}`
+        `${BASE_URL}/api/v1/course/getCourse/${courseId}`
       );
       setCourse(res.data.data);
     } catch (err) {
@@ -46,7 +48,7 @@ const EditCourse = () => {
     if (!sectionName) return alert("Enter section name");
 
     const res = await axios.post(
-      "http://localhost:4000/api/v1/course/create-section",
+      `${BASE_URL}/api/v1/course/create-section`,
       {
         sectionName,
         courseId,
@@ -65,7 +67,7 @@ const EditCourse = () => {
   const handleUpdateSection = async () =>{
     if(!editSectionName) return;
 
-    await axios.post("http://localhost:4000/api/v1/course/update-section",
+    await axios.post(`${BASE_URL}/api/v1/course/update-section`,
       {
         sectionId: editSectionId,
         sectionName: editSectionName,
@@ -80,7 +82,7 @@ const EditCourse = () => {
   };
 
   const handleDeleteSection = async (id) =>{
-    await axios.delete("http://localhost:4000/api/v1/course/delete-section",
+    await axios.delete(`${BASE_URL}/api/v1/course/delete-section`,
       {
         data: {sectionId: id},
         headers: {Authorization: `Bearer ${token}`},
@@ -106,7 +108,7 @@ const EditCourse = () => {
     formData.append("videoFile", subVideo);
 
     const res = await axios.post(
-      "http://localhost:4000/api/v1/course/create-subsection",
+      `${BASE_URL}/api/v1/course/create-subsection`,
       formData,
       {
         headers: {
@@ -133,7 +135,7 @@ const EditCourse = () => {
     if (editSub.videoFile) fd.append("videoFile", editSub.videoFile);
 
     await axios.post(
-      "http://localhost:4000/api/v1/course/update-subsection",
+      `${BASE_URL}/api/v1/course/update-subsection`,
       fd,
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -146,7 +148,7 @@ const EditCourse = () => {
   //delete Section
   const handleDeleteSubSection = async (subId, sectionId) => {
     await axios.delete(
-      "http://localhost:4000/api/v1/course/delete-subsection",
+      `${BASE_URL}/api/v1/course/delete-subsection`,
       {
         data: { subSectionId: subId,
           SectionId: sectionId 

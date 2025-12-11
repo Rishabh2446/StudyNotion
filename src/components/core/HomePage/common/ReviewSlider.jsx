@@ -4,6 +4,8 @@ import { FaStar } from "react-icons/fa";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 
 const ReviewSlider = () => {
   const [reviews, setReviews] = useState([]);
@@ -11,7 +13,7 @@ const ReviewSlider = () => {
   // ---- Fetch All Reviews from Backend ----
   const fetchReviews = async () => {
     try {
-      const response = await fetch("http://localhost:4000/api/v1/course/getAllReviews", {
+      const response = await fetch(`${BASE_URL}/api/v1/course/getAllReviews`, {
         method: "GET",
       });
 

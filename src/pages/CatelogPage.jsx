@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import CourseCard from "../components/core/HomePage/CourseCard";
 import CatalogCourseCard from "../components/core/HomePage/CatalogCourseCard";
 import Footer from "../components/core/HomePage/common/Footer";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 
 const CatalogPage = () => {
   const { categoryId } = useParams();
@@ -14,7 +16,7 @@ const CatalogPage = () => {
 
   const loadCategoryData = async () => {
     try {
-      const res = await fetch("http://localhost:4000/api/v1/course/categoryPageDetails", {
+      const res = await fetch(`${BASE_URL}/api/v1/course/categoryPageDetails`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

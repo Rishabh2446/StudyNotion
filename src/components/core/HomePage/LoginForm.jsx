@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { setLogin } from "../../../slices/authSlice";
 import { setUser } from "../../../slices/profileSlice";
 import toast from 'react-hot-toast';
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 
 const LoginForm = () => {
@@ -32,7 +33,7 @@ const LoginForm = () => {
         console.log("Login submitted:", formData);
 
         try {
-            const response = await axios.post("http://localhost:4000/api/v1/auth/login", formData, {
+            const response = await axios.post(`${BASE_URL}/api/v1/auth/login`, formData, {
                 withCredentials: true
             });
 
@@ -59,11 +60,11 @@ const LoginForm = () => {
                 
 
             } else {
-                alert(response.data.message); // show error message
+                toast.error(response.data.message); // show error message
             }
 
         } catch(error){
-            alert(error.response?.data?.message || "Login failed");
+            toast.error(error.response?.data?.message || "Login failed");
         }
     }
   return (

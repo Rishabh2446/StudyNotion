@@ -10,6 +10,7 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import axios from 'axios';
 import { FaChevronDown, FaChevronRight } from "react-icons/fa";
 
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 
 
@@ -39,7 +40,7 @@ const Navbar = () => {
 
     const fetchCategories = async ()=>{
         try{
-          const res = await axios.get("http://localhost:4000/api/v1/course/showAllCategory");
+          const res = await axios.get(`${BASE_URL}/api/v1/course/showAllCategory`);
           console.log("Fetched categories:", res.data);
 
           if(res.data?.success){

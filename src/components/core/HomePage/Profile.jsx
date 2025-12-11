@@ -6,6 +6,8 @@ import { setUser } from "../../../slices/profileSlice";
 import { setLogin } from "../../../slices/authSlice";
 import { useState } from "react";
 import toast from "react-hot-toast";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 
 const Profile = () => {
   const  user = useSelector((state) => state.profile.user);
@@ -21,7 +23,7 @@ const Profile = () => {
   console.log("Sending token:", token, typeof token);
     try{
       setLoading(true);
-      const res = await axios.delete("http://localhost:4000/api/v1/profile/deleteAccount",{
+      const res = await axios.delete(`${BASE_URL}/api/v1/profile/deleteAccount`,{
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

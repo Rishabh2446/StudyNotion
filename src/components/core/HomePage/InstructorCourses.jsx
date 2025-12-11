@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const InstructorCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -11,7 +12,7 @@ const InstructorCourses = () => {
   const fetchCourses = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:4000/api/v1/course/getInstructorCourses",
+        `${BASE_URL}/api/v1/course/getInstructorCourses`,
         {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
@@ -41,7 +42,7 @@ const InstructorCourses = () => {
     const token = localStorage.getItem("token");
 
     const res = await axios.delete(
-      `http://localhost:4000/api/v1/course/deleteCourse/${courseId}`,
+      `${BASE_URL}/api/v1/course/deleteCourse/${courseId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

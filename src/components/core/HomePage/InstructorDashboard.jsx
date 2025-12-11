@@ -3,6 +3,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import InstructorChart from "./InstructorChart";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const InstructorDashboard = () => {
   const [courses, setCourses] = useState([]);
@@ -18,7 +19,7 @@ const InstructorDashboard = () => {
   const fetchInstructorData = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:4000/api/v1/course/getInstructorCourses",
+        `${BASE_URL}/api/v1/course/getInstructorCourses`,
         {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),

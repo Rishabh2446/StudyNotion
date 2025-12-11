@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const UpdatePasswordPage = () => {
 
@@ -16,7 +17,7 @@ const UpdatePasswordPage = () => {
     async function handleUpdate(e){
         e.preventDefault();
         try{
-            const response = await axios.post("http://localhost:4000/api/v1/auth/reset-password", {
+            const response = await axios.post(`${BASE_URL}/api/v1/auth/reset-password`, {
                 token,
                 ...formData,
             });
