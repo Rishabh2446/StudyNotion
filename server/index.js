@@ -34,7 +34,7 @@ app.use(cookieParser());
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://studynotion.vercel.app",  // your Vercel production URL
+  "https://studynotion-opal-pi.vercel.app",  // your Vercel production URL
 ];
 app.use((req, res, next) => {
   const origin = req.headers.origin;
