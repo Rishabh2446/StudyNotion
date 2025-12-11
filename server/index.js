@@ -31,15 +31,28 @@ app.use(
 )
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-    cors({
-        origin: [
-            "http://localhost:3000",
-            "https://studynotion-git-main-rishabh-guptas-projects-e1c50f84.vercel.app"
-        ],
-        credentials:true
-    })
-)
+
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://studynotion.vercel.app",  // your Vercel production URL
+];
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+
+  // Allow all dynamic Vercel preview URLs
+  if (origin && origin.endsWith(".vercel.app")) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+
+  // Allow fixed origins
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
 
 // clodinary connection
 cloudinaryConnect();
