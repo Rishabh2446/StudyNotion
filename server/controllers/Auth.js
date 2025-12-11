@@ -52,6 +52,13 @@ exports.sendOTP = async(req, res)=>{
         const otpBody = await OTP.create(otpPayload);
         console.log(otpBody);
 
+        // SEND EMAIL TO USER
+        await mailSender(
+            email,
+            "Your OTP Code",
+            `Your OTP verification code is: ${otp}\nValid for 5 minutes.`
+        );
+        
         // return successful response
         res.status(200).json({
             success:true,
