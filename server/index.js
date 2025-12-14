@@ -32,38 +32,32 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://studynotion-opal-pi.vercel.app",  // your Vercel production URL
-];
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // allow requests with no origin (Postman, curl)
+      if (!origin) return callback(null, true);
 
-  // Allow all dynamic Vercel preview URLs
-  if (origin && origin.endsWith(".vercel.app")) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
+      // allow localhost
+      if (origin === "http://localhost:3000") {
+        return callback(null, true);
+      }
 
-  // Allow fixed origins
-  if (allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
+      // allow ALL Vercel domains (prod + preview)
+      if (origin.endsWith(".vercel.app")) {
+        return callback(null, true);
+      }
 
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  
+      return callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
-  );
-
-  // Handle preflight request
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-  next();
-});
+// 🔥 IMPORTANT: handle preflight correctly
+app.options("*", cors());
 
 // clodinary connection
 cloudinaryConnect();
