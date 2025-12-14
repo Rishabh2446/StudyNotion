@@ -34,57 +34,50 @@ const SignupForm = () => {
             }
         ))
     }
-    async function submitHandler(event){
+    
+    async function submitHandler(event) {
         event.preventDefault();
-        if(formData.password !== formData.confirmPassword){
-            // toast.error("Password do not match.")
-            toast.error("Password do not match.")
-            return ;
+
+        if (formData.password !== formData.confirmPassword) {
+            toast.error("Password do not match.");
+            return;
         }
-        try{
-                setLoading(true);
 
-            const response = await axios.post(
-                `${BASE_URL}/api/v1/auth/send-otp`, 
-                {
-                
-                email: formData.email,
-                
-                }
-            );
+        // Save signup data immediately
+        dispatch(setSignup({
+            accountType,
+            email: formData.email,
+        }));
 
-            console.log("Signup response:", response.data);
+        localStorage.setItem("signupData", JSON.stringify({
+            firstName: formData.firstname,
+            lastName: formData.lastname,
+            email: formData.email,
+            password: formData.password,
+            accountType
+        }));
 
-            if (response.data.success) {
-                toast.success("OTP sent to your email!");
-                dispatch(setSignup({
-                    accountType,
-                    email: formData.email,
-                }));
-                // Save email in localStorage or context so OTP page knows it
-                localStorage.setItem("signupData", JSON.stringify({
-                    firstName: formData.firstname,
-                    lastName: formData.lastname,
-                    email: formData.email,
-                    password: formData.password,
-                    accountType: accountType
-                }));
-                // Redirect to OTP page
-                navigate("/verify-email");
-            } else {
-                alert(response.data.message || "Something went wrong.");
-            }
+        // 🔥 Navigate instantly (NO WAITING)
+        navigate("/verify-email");
 
-        }
-        catch (error) {
-            console.error("Signup error:", error);
-            alert(error.response?.data?.message || "Server error");
-        } finally{
-            setLoading(false);
-        }
+        // 🔥 Send OTP in background
+        axios.post(
+            `${BASE_URL}/api/v1/auth/send-otp`,
+            { email: formData.email },
+            { timeout: 5000 }
+        )
+        .then(() => {
+            toast.success("OTP sent to your email!");
+        })
+        .catch((error) => {
+            console.error("OTP error:", error);
+            toast.error("Failed to send OTP. Please try again.");
+        });
+    }
+
         
 
-    }
+    
 
   return (
     <div>
