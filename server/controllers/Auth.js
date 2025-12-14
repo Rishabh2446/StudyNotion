@@ -13,7 +13,16 @@ exports.sendOTP = async(req, res)=>{
 
     try{
         // fetch email from request body->
-        const {email} = req.body;
+        let {email} = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                message: "Email is required",
+            });
+        }
+
+        email = email.trim().toLowerCase();
 
         // check if user already exists->
         const checkUserPresent = await User.findOne({email});
@@ -28,7 +37,7 @@ exports.sendOTP = async(req, res)=>{
 
         
         // generate otp (user not already exist)
-        var otp = otpGenerator.generate(6, {
+        let otp = otpGenerator.generate(6, {
             upperCaseAlphabets:false,
             lowerCaseAlphabets:false,
             specialChars:false,
@@ -39,7 +48,7 @@ exports.sendOTP = async(req, res)=>{
         let result = await OTP.findOne({otp: otp});
 
         while(result){
-            otp = otpGenerator(6, {
+            otp = otpGenerator.generate(6, {
                 upperCaseAlphabets:false,
                 lowerCaseAlphabets:false,
                 specialChars:false,
@@ -52,25 +61,26 @@ exports.sendOTP = async(req, res)=>{
         const otpBody = await OTP.create(otpPayload);
         console.log(otpBody);
 
-        // SEND EMAIL TO USER
-        await mailSender(
-            email,
-            "Your OTP Code",
-            `Your OTP verification code is: ${otp}\nValid for 5 minutes.`
-        );
         
         // return successful response
         res.status(200).json({
             success:true,
             message:'OTP sent successfully.',
             otp,
-        })
+        });
+
+        // SEND EMAIL TO USER
+        mailSender(
+            email,
+            "Your OTP Code",
+            `Your OTP verification code is: ${otp}\nValid for 5 minutes.`
+        ).catch((err) => console.error("OTP email failed:", err));
     }
     catch(error){
         console.log(error);
         return res.status(500).json({
             success:false,
-            message:"Otp could not sent successfully",
+            message:"Otp could not sent!",
         })
     }
 }
