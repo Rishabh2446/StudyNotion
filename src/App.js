@@ -41,6 +41,7 @@ const App = () => {
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user"));
 
+    
     if (token && user) {
       dispatch(setLogin(token));
       dispatch(setUser(user));
@@ -48,6 +49,11 @@ const App = () => {
       setIsAppReady(true);
 
   }, [dispatch]);
+
+    useEffect(() => {
+    fetch(`${process.env.REACT_APP_BASE_URL}/`)
+      .catch(() => {});
+  }, []);
 
   return (
     <div className='w-screen min-h-screen bg-richblack-900 flex flex-col font-inter'>
