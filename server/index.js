@@ -68,12 +68,12 @@ app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/payment", paymentRoutes);
 app.use("/api/v1/course", courseRoutes);
 
-// Stripe requires raw body
-app.post(
-  "/api/v1/payment/webhook",
-  express.raw({ type: "application/json" }),
-  require("./controllers/stripeWebhook").stripeWebhookHandler
-);
+// // Stripe requires raw body
+// app.post(
+//   "/api/v1/payment/webhook",
+//   express.raw({ type: "application/json" }),
+//   require("./controllers/stripeWebhook").stripeWebhookHandler
+// );
 //default route
 app.get("/", (req,res)=>{
     return res.json({
