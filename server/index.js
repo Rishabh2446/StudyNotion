@@ -57,7 +57,7 @@ app.use(
 );
 
 // 🔥 IMPORTANT: handle preflight correctly
-app.options("*", cors());
+app.options("/*", cors());
 
 // clodinary connection
 cloudinaryConnect();
