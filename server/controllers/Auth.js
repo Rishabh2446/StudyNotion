@@ -13,6 +13,7 @@ exports.sendOTP = async(req, res)=>{
 
     try{
         // fetch email from request body->
+        console.log("➡ sendOTP hit:", req.body);
         let {email} = req.body;
 
         if (!email) {
@@ -23,9 +24,11 @@ exports.sendOTP = async(req, res)=>{
         }
 
         email = email.trim().toLowerCase();
+        console.log("✔ Normalized email:", email);
 
         // check if user already exists->
         const checkUserPresent = await User.findOne({email});
+        console.log("✔ User exists:", !!checkUserPresent);
 
         // if user already present , return response ->
         if(checkUserPresent){
@@ -60,21 +63,25 @@ exports.sendOTP = async(req, res)=>{
         const otpPayload = {email, otp}; 
         const otpBody = await OTP.create(otpPayload);
         console.log(otpBody);
-
-        
-        // return successful response
-        res.status(200).json({
-            success:true,
-            message:'OTP sent successfully.',
-            otp,
-        });
+        console.log("✔ OTP saved in DB:", otpBody._id);
 
         // SEND EMAIL TO USER
+            console.log("➡ Calling mailSender...");
         mailSender(
             email,
             "Your OTP Code",
             `Your OTP verification code is: ${otp}\nValid for 5 minutes.`
         ).catch((err) => console.error("OTP email failed:", err));
+            console.log("✔ OTP email sent successfully");
+
+        // return successful response
+        res.status(200).json({
+            success:true,
+            message:'OTP sent successfully.',
+            
+        });
+
+        
     }
     catch(error){
         console.log(error);
