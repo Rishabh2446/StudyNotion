@@ -36,44 +36,59 @@ const SignupForm = () => {
     }
     
     async function submitHandler(event) {
-        event.preventDefault();
+  event.preventDefault();
 
-        if (formData.password !== formData.confirmPassword) {
-            toast.error("Password do not match.");
-            return;
-        }
+  if (formData.password !== formData.confirmPassword) {
+    toast.error("Passwords do not match");
+    return;
+  }
 
-        // Save signup data immediately
-        dispatch(setSignup({
-            accountType,
-            email: formData.email,
-        }));
+  try {
+    setLoading(true);
 
-        localStorage.setItem("signupData", JSON.stringify({
-            firstName: formData.firstname,
-            lastName: formData.lastname,
-            email: formData.email,
-            password: formData.password,
-            accountType
-        }));
+    // 1️⃣ Call send-otp FIRST
+    const res = await axios.post(
+      `${BASE_URL}/api/v1/auth/send-otp`,
+      { email: formData.email },
+      { timeout: 5000 }
+    );
 
-        // 🔥 Navigate instantly (NO WAITING)
-        navigate("/verify-email");
+    // 2️⃣ If OTP sent successfully
+    toast.success("OTP sent to your email");
 
-        // 🔥 Send OTP in background
-        axios.post(
-            `${BASE_URL}/api/v1/auth/send-otp`,
-            { email: formData.email },
-            { timeout: 5000 }
-        )
-        .then(() => {
-            toast.success("OTP sent to your email!");
-        })
-        .catch((error) => {
-            console.error("OTP error:", error);
-            toast.error("Failed to send OTP. Please try again.");
-        });
+    // 3️⃣ Save signup data
+    dispatch(setSignup({
+      accountType,
+      email: formData.email,
+    }));
+
+    localStorage.setItem(
+      "signupData",
+      JSON.stringify({
+        firstName: formData.firstname,
+        lastName: formData.lastname,
+        email: formData.email,
+        password: formData.password,
+        accountType,
+      })
+    );
+
+    // 4️⃣ Navigate AFTER success
+    navigate("/verify-email");
+
+  } catch (error) {
+    // 🔴 Handle 401 properly
+    if (error.response?.status === 401) {
+      toast.error("User already registered. Please login.");
+      navigate("/login");
+    } else {
+      toast.error("Failed to send OTP. Try again.");
     }
+  } finally {
+    setLoading(false);
+  }
+}
+
 
         
 
