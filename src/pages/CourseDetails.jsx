@@ -238,7 +238,7 @@ const CourseDetails = () => {
                       alt="user"
                       className="w-12 h-12 rounded-full object-cover"
                     />
-                    <p className="font-semibold">{rev.user.firstName}</p>
+                    <p className="font-semibold">{rev?.user?.firstName}</p>
                     <p className="text-richblack-300 text-sm mt-2">{rev.review}</p>
 
                     <div className="flex items-center gap-1 mt-3">
