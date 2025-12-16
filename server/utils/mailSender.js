@@ -1,28 +1,19 @@
-const nodemailer = require("nodemailer");
+const SibApiV3Sdk = require("sib-api-v3-sdk");
+
+const client = SibApiV3Sdk.ApiClient.instance;
+client.authentications["api-key"].apiKey = process.env.BREVO_API_KEY;
 
 const mailSender = async (email, title, body) => {
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS, // 🔥 Gmail App Password
-      },
-    });
+  const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
-    const info = await transporter.sendMail({
-      from: `"StudyNotion" <${process.env.MAIL_USER}>`,
-      to: email,
-      subject: title,
-      html: body,
-    });
+  await apiInstance.sendTransacEmail({
+    to: [{ email }],
+    sender: { email: "studynotion.verify@gmail.com", name: "StudyNotion" },
+    subject: title,
+    htmlContent: body,
+  });
 
-    console.log("Email sent:", info.messageId);
-    return info;
-  } catch (error) {
-    console.error("Mail Error:", error);
-    throw error; // 🔥 don’t silently swallow errors
-  }
+  console.log("✅ Email sent via Brevo to:", email);
 };
 
 module.exports = mailSender;
