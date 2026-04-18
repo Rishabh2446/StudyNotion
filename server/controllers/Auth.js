@@ -1,6 +1,5 @@
 const User = require("../models/User");
-const OTP = require("../models/OTP");
-const otpGenerator = require("otp-generator");
+const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -8,229 +7,85 @@ const mailSender = require("../utils/mailSender");
 const Profile = require('../models/Profile');
 
 
-//SendOTp
-exports.sendOTP = async(req, res)=>{
 
-    try{
-        // fetch email from request body->
-        console.log("➡ sendOTP hit:", req.body);
-        let {email} = req.body;
 
-        if (!email) {
-            return res.status(400).json({
-                success: false,
-                message: "Email is required",
-            });
-        }
-
-        email = email.trim().toLowerCase();
-        console.log("✔ Normalized email:", email);
-
-        // check if user already exists->
-        const checkUserPresent = await User.findOne({email});
-        console.log("✔ User exists:", !!checkUserPresent);
-
-        // if user already present , return response ->
-        if(checkUserPresent){
-            return res.status(401).json({
-                success:false,
-                message:'User already registered',
-            })
-        }
-
-        
-        // generate otp (user not already exist)
-        let otp = otpGenerator.generate(6, {
-            upperCaseAlphabets:false,
-            lowerCaseAlphabets:false,
-            specialChars:false,
-        })
-        console.log("OTP generated: ", otp);
-
-        // check otp is unique or not
-        let result = await OTP.findOne({otp: otp});
-
-        while(result){
-            otp = otpGenerator.generate(6, {
-                upperCaseAlphabets:false,
-                lowerCaseAlphabets:false,
-                specialChars:false,
-            });
-            result = await OTP.findOne({otp: otp});      
-        }
-
-        // entry OTP IN DB->
-        const otpPayload = {email, otp}; 
-        const otpBody = await OTP.create(otpPayload);
-        console.log(otpBody);
-        console.log("✔ OTP saved in DB:", otpBody._id);
-
-        // SEND EMAIL TO USER
-            console.log("➡ Calling mailSender...");
-        mailSender(
-            email,
-            "Your OTP Code",
-            `Your OTP verification code is: ${otp}\nValid for 5 minutes.`
-        ).catch((err) => console.error("OTP email failed:", err));
-            console.log("✔ OTP email sent successfully");
-
-        // return successful response
-        res.status(200).json({
-            success:true,
-            message:'OTP sent successfully.',
-            
-        });
-
-        
-    }
-    catch(error){
-        console.log(error);
-        return res.status(500).json({
-            success:false,
-            message:"Otp could not sent!",
-        })
-    }
-}
-
-exports.verifyOTP = async (req, res) => {
-    console.log("verifyOTP hit:", req.body);
-
+// signUp
+exports.signUp = async (req, res) => {
   try {
-    const { email, otp, firstName, lastName, password, accountType } = req.body;
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword,
+      accountType,
+      contactNumber,
+    } = req.body;
 
-    if (!email || !otp) {
-      return res.status(400).json({ success: false, message: "Email and OTP are required" });
+    // validation
+    if (!firstName || !lastName || !email || !password || !confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
     }
 
-    // check otp from DB (assuming you stored it during sendOTP)
-    const userOtp = await OTP.findOne({ email, otp });
-
-    if (!userOtp) {
-      return res.status(400).json({ success: false, message: "Invalid OTP" });
+    // password match
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Passwords do not match",
+      });
     }
 
-     if (userOtp.otp !== otp) {
-      return res.status(400).json({ success: false, message: "Invalid OTP" });
+    // normalize email
+    const emailLower = email.trim().toLowerCase();
+
+    // check existing user
+    const existingUser = await User.findOne({ email: emailLower });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "User already exists",
+      });
     }
+
+    // hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await User.create({
-        firstName,
-        lastName,
-        email,
-        password: hashedPassword,
-        accountType,
+    // create profile
+    const profileDetails = await Profile.create({
+      gender: null,
+      dateOfBirth: null,
+      about: null,
+      contactNumber: null,
     });
 
-    
+    // create user
+    const user = await User.create({
+      firstName,
+      lastName,
+      email: emailLower,
+      contactNumber,
+      password: hashedPassword,
+      accountType,
+      additionalDetails: profileDetails._id,
+      image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
+    });
 
     return res.status(200).json({
       success: true,
-      message: "Email verified & account created",
-      
+      message: "User registered successfully",
+      user,
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "Server error", error });
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Signup failed",
+    });
   }
 };
-
-// signUp
-exports.signUp = async(req, res)=>{
-
-    try{
-            // data fetch from req body
-        const {
-            firstName,
-            lastName,
-            email,
-            password,
-            confirmPassword,
-            accountType,
-            contactNumber,
-            otp
-        } = req.body;
-
-        // validate data ->
-        if(!firstName || !lastName || !email || !password || !confirmPassword || !otp){
-            return res.status(400).json({
-                success:false,
-                message:"All feilds are required",
-            });
-        }
-
-        // match two password(password, confirm password)
-        if(password !== confirmPassword){
-            return res.status(400).json({
-                success:false,
-                message:"Password and ConfirmPassword value does not match, please try again.",
-            });
-        }
-        // check user already exist
-        const existingUser = await User.findOne({email});
-        if(existingUser){
-            return res.status(400).json({
-                success:false,
-                message:"User is already exist",
-            });
-        }
-
-        // find most recent OTP stored for the user
-        const recentOtp = await OTP.findOne({email}).sort({createdAt: -1}).limit(1);
-        console.log("recent otp", recentOtp);
-
-        // validate OTP
-        if(recentOtp.length == 0){
-            // otp not found
-            return res.status(400).json({
-                success:false,
-                message:"OTP not found"
-            });
-        }else if(otp !== recentOtp.otp){
-            // Invalid otp
-            return res.status(400).json({
-                success:false,
-                message:"Invalid OTP",
-            })
-        }
-
-        // Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // create entry in DB
-
-        const profileDetails = await Profile.create({
-            gender:null,
-            dateOfBirth:null,
-            about:null,
-            contactNumber:null,
-        });
-        const user = await User.create({
-            firstName,
-            lastName,
-            email,
-            contactNumber,
-            password:hashedPassword,
-            accountType,
-            additionalDetails:profileDetails._id,
-            image:`https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`,
-        })
-        // return res
-        return res.status(200).json({
-            success:true,
-            message:"User is registered successfully",
-            user,
-        })
-    }
-    catch(error){
-        console.log(error);
-        return res.status(400).json({
-            success:false,
-            message:"User cannot be registered, Please try again!"
-        })
-    }
-    
-
-}
 
 // Login
 exports.login = async(req, res)=>{

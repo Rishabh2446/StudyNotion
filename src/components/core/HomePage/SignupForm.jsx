@@ -3,8 +3,6 @@ import { useState } from 'react'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import { setSignup } from "../../../slices/authSlice"; 
 import toast from 'react-hot-toast';
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -12,7 +10,6 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 const SignupForm = () => {
 
     const navigate = useNavigate();
-    const dispatch = useDispatch();
 
 
     const [formData, setFormData] = useState({
@@ -35,7 +32,7 @@ const SignupForm = () => {
         ))
     }
     
-    async function submitHandler(event) {
+   async function submitHandler(event) {
   event.preventDefault();
 
   if (formData.password !== formData.confirmPassword) {
@@ -46,43 +43,28 @@ const SignupForm = () => {
   try {
     setLoading(true);
 
-    // 1️⃣ Call send-otp FIRST
-    const res = await axios.post(
-      `${BASE_URL}/api/v1/auth/send-otp`,
-      { email: formData.email },
-      { timeout: 5000 }
-    );
-
-    // 2️⃣ If OTP sent successfully
-    toast.success("OTP sent to your email");
-
-    // 3️⃣ Save signup data
-    dispatch(setSignup({
-      accountType,
-      email: formData.email,
-    }));
-
-    localStorage.setItem(
-      "signupData",
-      JSON.stringify({
+    const response = await axios.post(
+      `${BASE_URL}/api/v1/auth/signup`,
+      {
         firstName: formData.firstname,
         lastName: formData.lastname,
         email: formData.email,
         password: formData.password,
+        confirmPassword: formData.confirmPassword,
         accountType,
-      })
+      }
     );
 
-    // 4️⃣ Navigate AFTER success
-    navigate("/verify-email");
+    toast.success("Account created successfully");
+
+    // redirect to login
+    navigate("/login");
 
   } catch (error) {
-    // 🔴 Handle 401 properly
-    if (error.response?.status === 401) {
-      toast.error("User already registered. Please login.");
-      navigate("/login");
+    if (error.response?.status === 400) {
+      toast.error(error.response.data.message);
     } else {
-      toast.error("Failed to send OTP. Try again.");
+      toast.error("Signup failed. Try again.");
     }
   } finally {
     setLoading(false);
@@ -196,7 +178,7 @@ const SignupForm = () => {
         type='submit'
         disabled={loading}
         className='w-full bg-[#fde047] font-md rounded-lg px-3 py-2 mt-4 text-[#1f2937]'>
-            {loading ? "Sending OTP..." : "Create Account"}
+            {loading ? "Creating Account..." : "Create Account"}
         </button>
 
 
