@@ -1,4 +1,3 @@
-/* global Cashfree */
 
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -70,10 +69,11 @@ const CourseDetails = () => {
   };
 
   // ⭐ RUN HOOKS ONCE
-  useEffect(() => {
-    fetchCourseDetails();
-    checkEnrollment();
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+useEffect(() => {
+  fetchCourseDetails();
+  checkEnrollment();
+}, []);
 
   // ⭐ BUY COURSE
   const buyCourse = async () => {
@@ -261,6 +261,7 @@ const CourseDetails = () => {
           <div className="w-full lg:w-[320px] bg-richblack-800 p-4 rounded-lg border border-richblack-700 h-fit">
             <img
               src={course.thumbnail}
+                alt={course.courseName}
               className="w-full h-50 object-contain rounded-lg"
             />
 
