@@ -2,20 +2,17 @@ const express = require("express");
 const router = express.Router();
 
 // import controllers
-const { signUp, login, sendOTP, changePassword, verifyOTP } = require("../controllers/Auth");
+const { signUp, login,  changePassword, } = require("../controllers/Auth");
 const { contactUs } = require("../controllers/ContactUs");
 const {resetPasswordToken, resetPassword} = require("../controllers/Auth")
 
 // middleware importing
 const {auth} = require("../middlewares/auth");
 
-// Send OTP 
-router.post("/send-otp", sendOTP);
-router.post("/verifyOTP", verifyOTP);
 
 
 // signup route
-router.post("/signUp", signUp);
+router.post("/signup", signUp);
 
 // login route
 router.post("/login", login);
