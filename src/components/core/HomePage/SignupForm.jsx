@@ -20,7 +20,7 @@ const SignupForm = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    const [accountType, setAccountType] = useState("student");
+    const [accountType, setAccountType] = useState("Student");
     const [loading, setLoading] = useState(false);
     
     function changeHandler(event){
@@ -80,13 +80,13 @@ const SignupForm = () => {
     <div>
       {/* Student-Instructor tab */}
       <div className='bg-[#0f172a] flex px-1 py-2 gap-x-1 rounded-full max-w-max mt-4'>
-        <button onClick={() => setAccountType("student")}
-        className={`py-2 px-5 rounded-full border-none cursor-pointer transition-all duration-200 ease-in-out bg-transparent text-red ${accountType === "student" ? "bg-richblack-900 text-richblack-5" : "text-richblack-700"}`}
+        <button onClick={() => setAccountType("Student")}
+        className={`py-2 px-5 rounded-full border-none cursor-pointer transition-all duration-200 ease-in-out bg-transparent text-red ${accountType === "Student" ? "bg-richblack-900 text-richblack-5" : "text-richblack-700"}`}
         >
             Student
         </button>
-        <button onClick={()=> setAccountType("instructor")}
-        className={`py-2 px-5 rounded-full border-none cursor-pointer transition-all duration-200 ease-in-out bg-transparent text-red ${accountType === "instructor" ? "bg-richblack-900 text-richblack-5" : "text-richblack-700"}`}
+        <button onClick={()=> setAccountType("Instructor")}
+        className={`py-2 px-5 rounded-full border-none cursor-pointer transition-all duration-200 ease-in-out bg-transparent text-red ${accountType === "Instructor" ? "bg-richblack-900 text-richblack-5" : "text-richblack-700"}`}
         >
             Instructor
         </button>
