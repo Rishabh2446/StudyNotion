@@ -135,6 +135,8 @@ GitHub: https://github.com/Rishabh2446
 LinkedIn: www.linkedin.com/in/rishabh-gupta-b64b32336
 Email: guptarishabh8686@gmail.com
 
+
+
 ---
 
 ## ⭐ Acknowledgements
@@ -143,4 +145,4 @@ Email: guptarishabh8686@gmail.com
 - Built for learning and real-world practice
 
 ## Live Link 
-studynotion-opal-pi.vercel.app
+StudyNotion: studynotion-opal-pi.vercel.app
