@@ -132,10 +132,15 @@ Contributions are welcome! Feel free to fork the repo and submit a pull request.
 
 **Rishabh Gupta**  
 GitHub: https://github.com/Rishabh2446  
+LinkedIn: www.linkedin.com/in/rishabh-gupta-b64b32336
+Email: guptarishabh8686@gmail.com
 
 ---
 
 ## ⭐ Acknowledgements
 
 - Inspired by modern EdTech platforms  
-- Built for learning and real-world practice  
+- Built for learning and real-world practice
+
+## Live Link 
+studynotion-opal-pi.vercel.app
